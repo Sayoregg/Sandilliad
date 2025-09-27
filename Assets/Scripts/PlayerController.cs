@@ -76,7 +76,6 @@ public class PlayerController : MonoBehaviour
         Walking();
         Turning();
         Jumping();
-        UpdateSandMeter();
         // Apply gravity
         velocity.y += gravitySpecial * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
@@ -134,18 +133,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void UpdateSandMeter()
-    {
-        Vector2 movementInput = moveAction.ReadValue<Vector2>();
-        Image sandMeterImage = sandMeter.GetComponent<Image>();
 
-        //Meter Filling
-        sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount / sandMax, Time.deltaTime * 0.4f);
-        sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, 0.27777f);
 
-        //Meter Turning
-        sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
-    }
 
     private void Jumping()
     {
