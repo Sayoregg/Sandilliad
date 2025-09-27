@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
         {
             eyeLeft.transform.localPosition = new Vector3(-0.735f, 0.375f, 0.325f);
             eyeRight.transform.localPosition = new Vector3(-0.735f, 0.375f, 0.325f);
-        } 
+        }
         if (body.transform.forward.x > 0)
         {
             eyeLeft.transform.localPosition = new Vector3(-0.735f, -0.375f, 0.325f);
@@ -187,10 +187,10 @@ public class PlayerController : MonoBehaviour
 
         //Meter Filling
 
- 
 
-        float maxPlusOverflow = 0.277777f + 0.277777f * (sandOverflow/sandMax);
-        Debug.Log("Max+Oveflow: " +maxPlusOverflow);
+
+        float maxPlusOverflow = 0.277777f + 0.277777f * (sandOverflow / sandMax);
+        Debug.Log("Max+Oveflow: " + maxPlusOverflow);
         sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, maxPlusOverflow * sandAmount / (sandMax + sandOverflow), Time.deltaTime * 0.4f);
         sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, maxPlusOverflow);
         sandAmount = Mathf.Clamp(sandAmount, 0, sandMax + sandOverflow);
@@ -208,7 +208,7 @@ public class PlayerController : MonoBehaviour
         }
         if (isBroken)
         {
-            hole.SetActive(true); 
+            hole.SetActive(true);
             sandAmount = Mathf.MoveTowards(sandAmount, 0, 10f * Time.deltaTime);
 
             if (repairAction.WasPressedThisFrame() && sandAmount > 60f)
@@ -216,19 +216,11 @@ public class PlayerController : MonoBehaviour
                 sandAmount -= 60f;
                 isBroken = false;
             }
-        } else
+        }
+        else
         {
             hole.SetActive(false);
         }
-
-        //Meter Turning
-        sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
-
-
-        Debug.Log(0.277777f * sandAmount / sandMax);
-        sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount / sandMax, Time.deltaTime * 0.4f);
-        sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, 0.27777f);
-        sandAmount = Mathf.Clamp(sandAmount, 0, sandMax);
 
         //Meter Turning
         sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
