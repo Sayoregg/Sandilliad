@@ -27,7 +27,6 @@ public class CollisionDetection : MonoBehaviour
             //if vector.Distance is smaller than 2
             //start courutine
             Vector3 distanceSand = transform.parent.position - other.transform.position;
-            Debug.Log(distanceSand);
             if (distanceSand.magnitude <= 1.2f)
             {
                 StartCoroutine(SizeChange(other.transform, other.gameObject.transform.localScale, other.gameObject));
@@ -60,6 +59,7 @@ public class CollisionDetection : MonoBehaviour
             yield return null;
         }
         target.localScale = Vector3.zero;
+
         _player.GetComponent<PlayerController>().AddSand(20f);
         Destroy(targetObject);
     }
@@ -79,8 +79,6 @@ public class CollisionDetection : MonoBehaviour
             float t = elapsed / duration;
 
             target.transform.position = Vector3.MoveTowards(startPosition, transform.parent.transform.position, t * _movementSpeedMultiplier);
-
-            Debug.Log(target.localScale);
 
 
             elapsed += Time.deltaTime;

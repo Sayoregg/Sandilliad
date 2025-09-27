@@ -1,4 +1,5 @@
 using Unity.VisualScripting;
+using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
@@ -32,6 +33,15 @@ public class PlayerController : MonoBehaviour
     //Movement variables
     public float moveSpeed = 10f;
     private float walkingTimer = 0f;
+    public Vector3 velocity;
+    public bool isGrounded;
+    public float gravitySpecial = -90f;
+    //Jump variables
+    private bool isJumping;
+    public float jumpHeight = 5f;
+    public float maxJumpTime = 0.3f;
+    public float jumpHoldForce = 50f;
+    private float jumpTimeCounter;
 
 
     void Start()
@@ -45,8 +55,10 @@ public class PlayerController : MonoBehaviour
         jumpAction = InputSystem.actions.FindAction("Jump");
 
         //Variables
+        sandMeter.GetComponent<Image>().fillAmount = 0f;
         sandMax = 100f;
-        sandAmount = 0f;
+        sandAmount = 20f;
+
 
     }
     private void Awake()
@@ -60,9 +72,14 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //Movement
+        isGrounded = GetComponent<CharacterController>().isGrounded;
         Walking();
         Turning();
+        Jumping();
         UpdateSandMeter();
+        // Apply gravity
+        velocity.y += gravitySpecial * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
     private void Walking()
     {
@@ -123,17 +140,40 @@ public class PlayerController : MonoBehaviour
         Image sandMeterImage = sandMeter.GetComponent<Image>();
 
         //Meter Filling
-        if (movementInput.y > 0)
-        {
-            sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount/sandMax, Time.deltaTime * 0.4f);
-        }
-        if (movementInput.y < 0)
-        {
-            sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0f, Time.deltaTime * 0.4f);
-        }
+        sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount / sandMax, Time.deltaTime * 0.4f);
+        sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, 0.27777f);
 
         //Meter Turning
         sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
+    }
+
+    private void Jumping()
+    {
+        // Jump start
+        if (jumpAction.WasPressedThisFrame() && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravitySpecial);
+            isJumping = true;
+            jumpTimeCounter = 0f;
+        }
+        //Jump hold
+        if (jumpAction.IsPressed() && isJumping)
+        {
+            if (jumpTimeCounter < maxJumpTime)
+            {
+                velocity.y += jumpHoldForce * Time.deltaTime;
+                jumpTimeCounter += Time.deltaTime;
+            }
+            else
+            {
+                isJumping = false;
+            }
+        }
+        // Jump end
+        if (jumpAction.WasReleasedThisFrame())
+        {
+            isJumping = false;
+        }
     }
 
     public void AddSand(float amount)
