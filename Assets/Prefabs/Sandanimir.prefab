@@ -499,8 +499,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7759495345679653172}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
+  m_Mass: 200
+  m_Drag: 50
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -528,7 +528,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7274458677409372855}
   - component: {fileID: 7364660668606542885}
-  m_Layer: 0
+  - component: {fileID: 4215642387652951604}
+  m_Layer: 6
   m_Name: Sandanimir
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -578,3 +579,24 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4215642387652951604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8052366918235848717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93dae74180a13334298587d0974fa11b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footLeft: {fileID: 3125814840021861509}
+  footRight: {fileID: 5235750673573533860}
+  eyeLeft: {fileID: 3638343291348250863}
+  eyeRight: {fileID: 2640229292905064650}
+  body: {fileID: 7759495345679653172}
+  bodyPivot: {fileID: 5789472104444212073}
+  guzzlerCollider: {fileID: 0}
+  torque: 1083.4
+  moveSpeed: 10
