@@ -6,25 +6,15 @@ using UnityEngine;
 
 public class CollisionDetection : MonoBehaviour
 {
-  
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    [SerializeField]
+    private int _movementSpeedMultiplier;
+    
+    [SerializeField]
+    private int _shrinkingSpeedMultiplier;
+    private void OnTriggerStay(Collider other)
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-
-    }
-
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Sand"&&ValueManager.IsSucking)
+        if (other.tag == "Sand" && ValueManager.IsSucking)
         {
             StartCoroutine(SuckSand(other.transform, other.gameObject.transform.localScale, other.gameObject));
             StartCoroutine(SmoothMovement(other.transform, other.gameObject.transform.position));
@@ -37,32 +27,7 @@ public class CollisionDetection : MonoBehaviour
         //smooth animation to throw the zurks away
 
 
-        float duration = 2f;
-        float elapsed = 0f;
-
-
-
-        while (elapsed < duration)
-        {
-            float t = elapsed / duration;
-
-
-            target.localScale = startScale * Mathf.Lerp(1, 0, t);
-
-
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        target.localScale = Vector3.zero;
-        Destroy(targetObject);
-    }
-    private IEnumerator ThrowSand(Transform target, Vector3 startScale, GameObject targetObject)
-    {
-        //smooth animation to throw the zurks away
-
-
-        float duration = 2f;
+        float duration = 1*_shrinkingSpeedMultiplier;
         float elapsed = 0f;
 
 
@@ -97,7 +62,7 @@ public class CollisionDetection : MonoBehaviour
         {
             float t = elapsed / duration;
 
-            target.transform.position = Vector3.MoveTowards(startPosition, transform.position, t * 2);
+            target.transform.position = Vector3.MoveTowards(startPosition, transform.parent.transform.position, t * _movementSpeedMultiplier);
 
             Debug.Log(target.localScale);
 

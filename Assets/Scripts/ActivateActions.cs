@@ -14,6 +14,7 @@ public class ActivateActions : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             ValueManager.IsSucking = true;
+            
         }
         else
         {
