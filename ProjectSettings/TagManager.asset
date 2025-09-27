@@ -8,6 +8,7 @@ TagManager:
   - SandMeter
   - SandanielBody
   - SandMeterOverflow
+  - SandText
   layers:
   - Default
   - TransparentFX
