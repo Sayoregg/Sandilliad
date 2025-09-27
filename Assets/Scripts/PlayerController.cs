@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public GameObject eyeRight;
     public GameObject body;
     public GameObject bodyPivot;
+    public GameObject hole;
     public GuzzlerColliderController guzzlerCollider;
     public float sandAmount;
 
@@ -25,11 +26,16 @@ public class PlayerController : MonoBehaviour
     private GameObject sandMeter;
 
     private float sandMax;
+    private float sandOverflow;
+    private float sandTimer;
+
+    private bool isBroken;
 
 
     //Input actions
     private InputAction moveAction;
     private InputAction jumpAction;
+    private InputAction repairAction;
 
     //Movement variables
     public float moveSpeed = 10f;
@@ -54,11 +60,14 @@ public class PlayerController : MonoBehaviour
         //Inputs
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
+        repairAction = InputSystem.actions.FindAction("Interact");
 
         //Variables
         sandMeter.GetComponent<Image>().fillAmount = 0f;
-        sandMax = 100f;
+        sandMax = 140f;
+        sandOverflow = 60f;
         sandAmount = 20f;
+        sandTimer = 0f;
     }
     private void Awake()
     {
@@ -172,21 +181,54 @@ public class PlayerController : MonoBehaviour
     }
     private void UpdateSandMeter()
     {
+        sandTimer += Time.deltaTime;
         Vector2 movementInput = moveAction.ReadValue<Vector2>();
         Image sandMeterImage = sandMeter.GetComponent<Image>();
 
         //Meter Filling
-        Debug.Log(0.277777f * sandAmount / sandMax);
-        sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount / sandMax, Time.deltaTime * 0.4f);
-        sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, 0.27777f);
-        sandAmount = Mathf.Clamp(sandAmount, 0, sandMax);
+ 
+
+        float maxPlusOverflow = 0.277777f + 0.277777f * (sandOverflow/sandMax);
+        Debug.Log("Max+Oveflow: " +maxPlusOverflow);
+        sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, maxPlusOverflow * sandAmount / (sandMax + sandOverflow), Time.deltaTime * 0.4f);
+        sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, maxPlusOverflow);
+        sandAmount = Mathf.Clamp(sandAmount, 0, sandMax + sandOverflow);
+
+        //Overflow
+        if (sandAmount > sandMax && sandTimer > 2f)
+        {
+            sandAmount = Mathf.MoveTowards(sandAmount, sandMax, 20f * Time.deltaTime);
+        }
+
+        //Oveflow Explosion
+        if (sandAmount >= sandMax + sandOverflow)
+        {
+            isBroken = true;
+        }
+        if (isBroken)
+        {
+            hole.SetActive(true); 
+            sandAmount = Mathf.MoveTowards(sandAmount, 0, 10f * Time.deltaTime);
+
+            if (repairAction.WasPressedThisFrame() && sandAmount > 60f)
+            {
+                sandAmount -= 60f;
+                isBroken = false;
+            }
+        } else
+        {
+            hole.SetActive(false);
+        }
 
         //Meter Turning
         sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
+
+
     }
     public void AddSand(float amount)
     {
         sandAmount += amount;
+        sandTimer = 0;
     }
     public void RemoveSand(float amount)
     {
