@@ -12,6 +12,13 @@ public class CollisionDetection : MonoBehaviour
     
     [SerializeField]
     private int _shrinkingSpeedMultiplier;
+
+    private GameObject _player;
+
+    private void Start()
+    {
+        _player = GameObject.FindGameObjectWithTag("Player");
+    }
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Sand" && ValueManager.IsSucking)
@@ -53,7 +60,7 @@ public class CollisionDetection : MonoBehaviour
             yield return null;
         }
         target.localScale = Vector3.zero;
-       
+        _player.GetComponent<PlayerController>().AddSand(20f);
         Destroy(targetObject);
     }
 
