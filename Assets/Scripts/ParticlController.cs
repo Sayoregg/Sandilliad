@@ -18,7 +18,7 @@ namespace Assets.Scripts
             if (ValueManager.IsSucking)
             {
                 this.GetComponent<ParticleSystem>().Play();
-                Debug.Log("particle play");
+              
             }
             else { this.GetComponent<ParticleSystem>().Stop(); }
 

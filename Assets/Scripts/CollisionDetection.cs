@@ -9,15 +9,9 @@ using static UnityEngine.GraphicsBuffer;
 public class CollisionDetection : MonoBehaviour
 {
 
-    [SerializeField]
-    private int _movementSpeedMultiplier;
-
-    [SerializeField]
-    private int _shrinkingSpeedMultiplier;
-    private Vector3 _sizeSand;
-    private GameObject _sand;
 
     private GameObject _player;
+
 
     private void Start()
     {
@@ -27,6 +21,17 @@ public class CollisionDetection : MonoBehaviour
     {
         if (other.tag == "Sand" && ValueManager.IsSucking)
         {
+            //Ray ray = new Ray(transform.position, other.transform.position - transform.position);
+
+            //Debug.DrawRay(ray.origin, ray.direction);
+            //if (Physics.Raycast(ray, out RaycastHit hit, 1000, 3))
+            //{
+            //    Debug.Log(hit.collider.gameObject.layer);
+
+            //    return;
+            //}
+
+
             if (other.gameObject != null)
             {
                 other.transform.position = Vector3.MoveTowards(other.transform.position, transform.parent.transform.position, 0.2f);
@@ -34,12 +39,10 @@ public class CollisionDetection : MonoBehaviour
             if (other.gameObject != null)
             {
                 other.transform.localScale = other.transform.localScale * (Mathf.Lerp(1, 0, 0.1f));
-                
+
             }
 
-            _sizeSand = other.transform.localScale;
-            _sand = other.gameObject;
-           
+
             //create vector from parent to sand
             //if vector.Distance is smaller than 2
             //start courutine
