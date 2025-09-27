@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ActivateActions : MonoBehaviour
 {
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,6 +15,7 @@ public class ActivateActions : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             ValueManager.IsSucking = true;
+           
             
         }
         else
@@ -29,5 +31,6 @@ public class ActivateActions : MonoBehaviour
         {
             ValueManager.IsBlowing = false;
         }
+        
     }
 }
