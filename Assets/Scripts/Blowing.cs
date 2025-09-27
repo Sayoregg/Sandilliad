@@ -27,7 +27,7 @@ public class Blowing : MonoBehaviour
         }
         if (_hasAddedForce == false&&_blowedSand!=null)
         {
-            _blowedSand.GetComponent<Rigidbody>().AddForce(transform.forward*800);
+            _blowedSand.GetComponent<Rigidbody>().AddForce(transform.forward*_addForceMultiplier);
             _hasAddedForce = true;
         }
 

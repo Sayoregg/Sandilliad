@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class CollisionDetection : MonoBehaviour
@@ -9,9 +10,10 @@ public class CollisionDetection : MonoBehaviour
 
     [SerializeField]
     private int _movementSpeedMultiplier;
-    
+
     [SerializeField]
     private int _shrinkingSpeedMultiplier;
+    private int _coroutineCounter;
 
     private GameObject _player;
 
@@ -27,22 +29,27 @@ public class CollisionDetection : MonoBehaviour
             //if vector.Distance is smaller than 2
             //start courutine
             Vector3 distanceSand = transform.parent.position - other.transform.position;
-            Debug.Log(distanceSand);
-            if (distanceSand.magnitude <= 1.2f)
+
+            //if (distanceSand.magnitude <= 2)
+            //{
+            StartCoroutine(SizeChange(other.transform, other.gameObject.transform.localScale, other.gameObject));
+            //}
+            if (other.IsDestroyed()) { return; }
+            else
             {
-                StartCoroutine(SizeChange(other.transform, other.gameObject.transform.localScale, other.gameObject));
+                StartCoroutine(SmoothMovement(other.transform, other.gameObject.transform.position));
             }
-            StartCoroutine(SmoothMovement(other.transform, other.gameObject.transform.position));
+
+          
         }
 
     }
 
     private IEnumerator SizeChange(Transform target, Vector3 startScale, GameObject targetObject)
     {
-        //smooth animation to throw the zurks away
 
 
-        float duration = 1*_shrinkingSpeedMultiplier;
+        float duration = 1 * _shrinkingSpeedMultiplier;
         float elapsed = 0f;
 
 
@@ -59,17 +66,21 @@ public class CollisionDetection : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
+        Destroy(targetObject);
+
+
         target.localScale = Vector3.zero;
         _player.GetComponent<PlayerController>().AddSand(20f);
-        Destroy(targetObject);
+
+
     }
 
     private IEnumerator SmoothMovement(Transform target, Vector3 startPosition)
     {
-        //smooth animation to throw the zurks away
 
 
-        float duration = 2f;
+
+        float duration = 1f;
         float elapsed = 0f;
 
 
@@ -78,15 +89,20 @@ public class CollisionDetection : MonoBehaviour
         {
             float t = elapsed / duration;
 
-            target.transform.position = Vector3.MoveTowards(startPosition, transform.parent.transform.position, t * _movementSpeedMultiplier);
-
-            Debug.Log(target.localScale);
-
+            if (target != null)
+            {
+                target.transform.position = Vector3.MoveTowards(startPosition, transform.parent.transform.position, t * _movementSpeedMultiplier);
+            }
 
             elapsed += Time.deltaTime;
             yield return null;
         }
-        target.localScale = Vector3.zero;
+        
+       
+
 
     }
+
+
+
 }
