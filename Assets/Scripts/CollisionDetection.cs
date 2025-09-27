@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class CollisionDetection : MonoBehaviour
 {
@@ -13,7 +14,8 @@ public class CollisionDetection : MonoBehaviour
 
     [SerializeField]
     private int _shrinkingSpeedMultiplier;
-    private int _coroutineCounter;
+    private Vector3 _sizeSand;
+    private GameObject _sand;
 
     private GameObject _player;
 
@@ -25,83 +27,103 @@ public class CollisionDetection : MonoBehaviour
     {
         if (other.tag == "Sand" && ValueManager.IsSucking)
         {
+            if (other.gameObject != null)
+            {
+                other.transform.position = Vector3.MoveTowards(other.transform.position, transform.parent.transform.position, 0.2f);
+            }
+            if (other.gameObject != null)
+            {
+                other.transform.localScale = other.transform.localScale * (Mathf.Lerp(1, 0, 0.1f));
+                
+            }
+
+            _sizeSand = other.transform.localScale;
+            _sand = other.gameObject;
+           
             //create vector from parent to sand
             //if vector.Distance is smaller than 2
             //start courutine
-            Vector3 distanceSand = transform.parent.position - other.transform.position;
+            //Vector3 distanceSand = transform.parent.position - other.transform.position;
 
             //if (distanceSand.magnitude <= 2)
             //{
-            StartCoroutine(SizeChange(other.transform, other.gameObject.transform.localScale, other.gameObject));
+            //StartCoroutine(SizeChange(other.transform, other.gameObject.transform.localScale, other.gameObject));
             //}
-            if (other.IsDestroyed()) { return; }
-            else
-            {
-                StartCoroutine(SmoothMovement(other.transform, other.gameObject.transform.position));
-            }
+            //if (other.IsDestroyed()) { return; }
+            //else
+            //{
+            //    StartCoroutine(SmoothMovement(other.transform, other.gameObject.transform.position));
+            //}
 
-          
+
         }
 
     }
-
-    private IEnumerator SizeChange(Transform target, Vector3 startScale, GameObject targetObject)
+    private void Update()
     {
-
-
-        float duration = 1 * _shrinkingSpeedMultiplier;
-        float elapsed = 0f;
-
-
-
-        while (elapsed < duration)
+        if (_sizeSand.x <= 3f)
         {
-            float t = elapsed / duration;
-
-
-            target.localScale = startScale * Mathf.Lerp(1, 0, t);
-
-
-
-            elapsed += Time.deltaTime;
-            yield return null;
+           Destroy(_sand);
         }
-        Destroy(targetObject);
-
-
-        target.localScale = Vector3.zero;
-        _player.GetComponent<PlayerController>().AddSand(20f);
-
-
     }
 
-    private IEnumerator SmoothMovement(Transform target, Vector3 startPosition)
-    {
+    //private IEnumerator SizeChange(Transform target, Vector3 startScale, GameObject targetObject)
+    //{
+
+
+    //    float duration = 1 * _shrinkingSpeedMultiplier;
+    //    float elapsed = 0f;
 
 
 
-        float duration = 1f;
-        float elapsed = 0f;
+    //    while (elapsed < duration)
+    //    {
+    //        float t = elapsed / duration;
+
+
+    //        target.localScale = startScale * Mathf.Lerp(1, 0, t);
 
 
 
-        while (elapsed < duration)
-        {
-            float t = elapsed / duration;
-
-            if (target != null)
-            {
-                target.transform.position = Vector3.MoveTowards(startPosition, transform.parent.transform.position, t * _movementSpeedMultiplier);
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        
-       
+    //        elapsed += Time.deltaTime;
+    //        yield return null;
+    //    }
+    //    Destroy(targetObject);
 
 
-    }
+    //    target.localScale = Vector3.zero;
+    //    _player.GetComponent<PlayerController>().AddSand(20f);
+
+
+    //}
+
+    //private IEnumerator SmoothMovement(Transform target, Vector3 startPosition)
+    //{
+
+
+
+    //    float duration = 1f;
+    //    float elapsed = 0f;
+
+
+
+    //    while (elapsed < duration)
+    //    {
+    //        float t = elapsed / duration;
+
+    //        if (target != null)
+    //        {
+    //            target.transform.position = Vector3.MoveTowards(startPosition, transform.parent.transform.position, t * _movementSpeedMultiplier);
+    //        }
+
+    //        elapsed += Time.deltaTime;
+    //        yield return null;
+    //    }
+
+
+
+
+    //}
 
 
 
