@@ -16,13 +16,21 @@ public class CollisionDetection : MonoBehaviour
     {
         if (other.tag == "Sand" && ValueManager.IsSucking)
         {
-            StartCoroutine(SuckSand(other.transform, other.gameObject.transform.localScale, other.gameObject));
+            //create vector from parent to sand
+            //if vector.Distance is smaller than 2
+            //start courutine
+            Vector3 distanceSand = transform.parent.position - other.transform.position;
+            Debug.Log(distanceSand);
+            if (distanceSand.magnitude <= 1.2f)
+            {
+                StartCoroutine(SizeChange(other.transform, other.gameObject.transform.localScale, other.gameObject));
+            }
             StartCoroutine(SmoothMovement(other.transform, other.gameObject.transform.position));
         }
 
     }
 
-    private IEnumerator SuckSand(Transform target, Vector3 startScale, GameObject targetObject)
+    private IEnumerator SizeChange(Transform target, Vector3 startScale, GameObject targetObject)
     {
         //smooth animation to throw the zurks away
 
@@ -45,6 +53,7 @@ public class CollisionDetection : MonoBehaviour
             yield return null;
         }
         target.localScale = Vector3.zero;
+       
         Destroy(targetObject);
     }
 
