@@ -61,10 +61,6 @@ public class CollisionDetection : MonoBehaviour
     }
     private void Update()
     {
-        if (_sizeSand.x <= 3f)
-        {
-           Destroy(_sand);
-        }
     }
 
     //private IEnumerator SizeChange(Transform target, Vector3 startScale, GameObject targetObject)
