@@ -25,7 +25,10 @@ public class SandController : MonoBehaviour
     public void GetDestroyed()
     {
         _player.GetComponent<PlayerController>().AddSand(sandAmount);
-        _sandText.GetComponent<SandTextManager>().sandCollected++;
+        if (sandAmount > 10)
+        {
+            _sandText.GetComponent<SandTextManager>().sandCollected++;
+        }
         Destroy(gameObject);
     }
 }
