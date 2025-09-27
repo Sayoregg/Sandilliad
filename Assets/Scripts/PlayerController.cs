@@ -181,11 +181,15 @@ public class PlayerController : MonoBehaviour
     }
     private void UpdateSandMeter()
     {
+<<<<<<< HEAD
         sandTimer += Time.deltaTime;
+=======
+>>>>>>> 0938cb330611d5a970126354bf046e7bed6db021
         Vector2 movementInput = moveAction.ReadValue<Vector2>();
         Image sandMeterImage = sandMeter.GetComponent<Image>();
 
         //Meter Filling
+<<<<<<< HEAD
  
 
         float maxPlusOverflow = 0.277777f + 0.277777f * (sandOverflow/sandMax);
@@ -224,6 +228,15 @@ public class PlayerController : MonoBehaviour
         sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
 
 
+=======
+        Debug.Log(0.277777f * sandAmount / sandMax);
+        sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount / sandMax, Time.deltaTime * 0.4f);
+        sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, 0.27777f);
+        sandAmount = Mathf.Clamp(sandAmount, 0, sandMax);
+
+        //Meter Turning
+        sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
+>>>>>>> 0938cb330611d5a970126354bf046e7bed6db021
     }
     public void AddSand(float amount)
     {
