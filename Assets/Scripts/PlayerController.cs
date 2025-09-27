@@ -9,9 +9,13 @@ public class PlayerController : MonoBehaviour
     public GameObject footRight;
     public GameObject body;
     public GameObject bodyPivot;
+    public GuzzlerColliderController guzzlerCollider;
+
+    public float torque;
 
     //Private Variables
     private CharacterController controller;
+    private Vector3 startingForward;
 
     //Input actions
     private InputAction moveAction;
@@ -51,6 +55,7 @@ public class PlayerController : MonoBehaviour
         //Movement
         Vector2 movementInput = moveAction.ReadValue<Vector2>();
         controller.Move(new Vector3(movementInput.x * moveSpeed * Time.deltaTime, 0));
+        body.transform.position = bodyPivot.transform.position;
 
         //Animation
         if (movementInput.magnitude > 0)
@@ -67,24 +72,25 @@ public class PlayerController : MonoBehaviour
 
     private void Turning()
     {
+        startingForward = body.transform.forward;
+
         Vector2 mousePos, guzzlerPos;
         mousePos = Mouse.current.position.ReadValue();
         guzzlerPos = Camera.main.WorldToScreenPoint(transform.position);
 
         Vector2 relativeVector = mousePos - guzzlerPos;
-        float guzzlerAngle = Mathf.Atan2(relativeVector.y, relativeVector.x) * (180 / Mathf.PI);
+        relativeVector.Normalize();
 
-        body.transform.rotation = Quaternion.Euler(-guzzlerAngle, 90, 0);
+        body.GetComponent<Rigidbody>().AddTorque(Vector3.forward * Vector3.Cross(relativeVector, body.transform.forward).z * -torque);
 
-        if (Mathf.Abs(guzzlerAngle) > 90)
-        {
-            bodyPivot.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-        } else
-        {
-            bodyPivot.transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
+        Debug.Log(Vector3.forward * Vector3.Cross(relativeVector, body.transform.forward).z * -1);
 
-        Debug.Log(guzzlerAngle);
+        //body.GetComponent<Rigidbody>().rotation = Quaternion.RotateTowards(body.GetComponent<Rigidbody>().rotation, Quaternion.LookRotation(relativeVector), 600 * Time.deltaTime);
+        //body.transform.forward = relativeVector;
+        //if (guzzlerCollider.isColliding)
+        //{
+        //    body.transform.forward = startingForward;
+        //}
     }
 
 }
