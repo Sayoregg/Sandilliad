@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     public GameObject body;
     public GameObject bodyPivot;
     public GuzzlerColliderController guzzlerCollider;
+    public float sandAmount;
 
     public float torque;
 
@@ -24,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private GameObject sandMeter;
 
     private float sandMax;
-    private float sandAmount;
+
 
     //Input actions
     private InputAction moveAction;
@@ -35,12 +36,12 @@ public class PlayerController : MonoBehaviour
     private float walkingTimer = 0f;
     public Vector3 velocity;
     public bool isGrounded;
-    public float gravitySpecial = -90f;
+    public float gravitySpecial = -25f;
     //Jump variables
     private bool isJumping;
-    public float jumpHeight = 5f;
+    public float jumpHeight = 2.5f;
     public float maxJumpTime = 0.3f;
-    public float jumpHoldForce = 50f;
+    public float jumpHoldForce = 25f;
     private float jumpTimeCounter;
 
 
@@ -58,8 +59,6 @@ public class PlayerController : MonoBehaviour
         sandMeter.GetComponent<Image>().fillAmount = 0f;
         sandMax = 100f;
         sandAmount = 20f;
-
-
     }
     private void Awake()
     {
@@ -76,8 +75,15 @@ public class PlayerController : MonoBehaviour
         Walking();
         Turning();
         Jumping();
+        UpdateSandMeter();
+
         // Apply gravity
         velocity.y += gravitySpecial * Time.deltaTime;
+        if (isGrounded)
+        {
+            velocity.x = 0f;
+            velocity.z = 0f;
+        }
         controller.Move(velocity * Time.deltaTime);
     }
     private void Walking()
@@ -164,10 +170,27 @@ public class PlayerController : MonoBehaviour
             isJumping = false;
         }
     }
+    private void UpdateSandMeter()
+    {
+        Vector2 movementInput = moveAction.ReadValue<Vector2>();
+        Image sandMeterImage = sandMeter.GetComponent<Image>();
 
+        //Meter Filling
+        Debug.Log(0.277777f * sandAmount / sandMax);
+        sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount / sandMax, Time.deltaTime * 0.4f);
+        sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, 0.27777f);
+        sandAmount = Mathf.Clamp(sandAmount, 0, sandMax);
+
+        //Meter Turning
+        sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
+    }
     public void AddSand(float amount)
     {
         sandAmount += amount;
+    }
+    public void RemoveSand(float amount)
+    {
+        sandAmount -= amount;
     }
 
 }

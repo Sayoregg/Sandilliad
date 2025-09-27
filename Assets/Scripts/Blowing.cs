@@ -12,7 +12,6 @@ public class Blowing : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
     }
 
     // Update is called once per frame
@@ -22,7 +21,10 @@ public class Blowing : MonoBehaviour
         if (ValueManager.IsBlowing)
         {
             _blowedSand = Instantiate(_blowedSand, transform.position, Quaternion.identity);
+            _blowedSand.transform.localScale = Vector3.one*6;
             _hasAddedForce = false;
+
+            //Player
 
         }
         if (_hasAddedForce == false&&_blowedSand!=null)
