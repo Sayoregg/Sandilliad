@@ -2,6 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class PlayerController : MonoBehaviour
     //Private Variables
     private CharacterController controller;
     private Vector3 startingForward;
+    private GameObject sandMeter;
+
+    private float sandMax;
+    private float sandAmount;
 
     //Input actions
     private InputAction moveAction;
@@ -33,10 +38,15 @@ public class PlayerController : MonoBehaviour
     {
         //Gameobjects
         controller = GetComponent<CharacterController>();
+        sandMeter = GameObject.FindGameObjectWithTag("SandMeter");
 
         //Inputs
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
+
+        //Variables
+        sandMax = 100f;
+        sandAmount = 0f;
 
     }
     private void Awake()
@@ -52,6 +62,7 @@ public class PlayerController : MonoBehaviour
         //Movement
         Walking();
         Turning();
+        UpdateSandMeter();
     }
     private void Walking()
     {
@@ -91,7 +102,6 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(cross) < 0.1f)
         {
             body.GetComponent<Rigidbody>().angularVelocity = Vector3.MoveTowards(body.GetComponent<Rigidbody>().angularVelocity, Vector3.zero, 30f * Time.deltaTime);
-            Debug.Log("STOOOOP");
         }
 
         //Eye Position Switching
@@ -105,8 +115,30 @@ public class PlayerController : MonoBehaviour
             eyeLeft.transform.localPosition = new Vector3(-0.735f, -0.375f, 0.325f);
             eyeRight.transform.localPosition = new Vector3(-0.735f, -0.375f, 0.325f);
         }
+    }
 
-        Debug.Log(body.GetComponent<Rigidbody>().angularVelocity);
+    private void UpdateSandMeter()
+    {
+        Vector2 movementInput = moveAction.ReadValue<Vector2>();
+        Image sandMeterImage = sandMeter.GetComponent<Image>();
+
+        //Meter Filling
+        if (movementInput.y > 0)
+        {
+            sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount/sandMax, Time.deltaTime * 0.4f);
+        }
+        if (movementInput.y < 0)
+        {
+            sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0f, Time.deltaTime * 0.4f);
+        }
+
+        //Meter Turning
+        sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
+    }
+
+    public void AddSand(float amount)
+    {
+        sandAmount += amount;
     }
 
 }
