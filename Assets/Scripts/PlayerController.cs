@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
         Walking();
         Turning();
         Jumping();
-        UpdateSandMeter();
+        //UpdateSandMeter();
 
         // Apply gravity
         velocity.y += gravitySpecial * Time.deltaTime;
@@ -170,20 +170,20 @@ public class PlayerController : MonoBehaviour
             isJumping = false;
         }
     }
-    private void UpdateSandMeter()
-    {
-        Vector2 movementInput = moveAction.ReadValue<Vector2>();
-        Image sandMeterImage = sandMeter.GetComponent<Image>();
+    //private void UpdateSandMeter()
+    //{
+    //    Vector2 movementInput = moveAction.ReadValue<Vector2>();
+    //    Image sandMeterImage = sandMeter.GetComponent<Image>();
 
-        //Meter Filling
-        Debug.Log(0.277777f * sandAmount / sandMax);
-        sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount / sandMax, Time.deltaTime * 0.4f);
-        sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, 0.27777f);
-        sandAmount = Mathf.Clamp(sandAmount, 0, sandMax);
+    //    //Meter Filling
+    //    Debug.Log(0.277777f * sandAmount / sandMax);
+    //    sandMeterImage.fillAmount = Mathf.MoveTowards(sandMeterImage.fillAmount, 0.277777f * sandAmount / sandMax, Time.deltaTime * 0.4f);
+    //    sandMeterImage.fillAmount = Mathf.Clamp(sandMeterImage.fillAmount, 0, 0.27777f);
+    //    sandAmount = Mathf.Clamp(sandAmount, 0, sandMax);
 
-        //Meter Turning
-        sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
-    }
+    //    //Meter Turning
+    //    sandMeter.GetComponent<RectTransform>().localEulerAngles = Vector3.forward * (Vector3.SignedAngle(Vector3.right, body.transform.forward, Vector3.forward) - 40);
+    //}
     public void AddSand(float amount)
     {
         sandAmount += amount;
