@@ -18,20 +18,6 @@ public class Blowing : MonoBehaviour
     void Update()
     {
 
-        if (ValueManager.IsBlowing)
-        {
-            _blowedSand = Instantiate(_blowedSand, transform.position, Quaternion.identity);
-            _blowedSand.transform.localScale = Vector3.one*6;
-            _hasAddedForce = false;
-
-            //Player
-
-        }
-        if (_hasAddedForce == false&&_blowedSand!=null)
-        {
-            _blowedSand.GetComponent<Rigidbody>().AddForce(transform.forward*_addForceMultiplier);
-            _hasAddedForce = true;
-        }
 
     }
 }
