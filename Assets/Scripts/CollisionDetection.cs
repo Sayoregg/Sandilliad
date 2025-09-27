@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CollisionDetection : MonoBehaviour
 {
-
+  
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -16,32 +16,23 @@ public class CollisionDetection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (_shouldGetSmaller)
-        //{
-        //    _scaleSand = Vector3.Lerp(_scaleSand, new Vector3(0, 0, 0), 0.1f);
 
-        //}
+
     }
 
-   
+
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Sand")
+        if (other.tag == "Sand"&&ValueManager.IsSucking)
         {
-   
-
-            StartCoroutine(SuckSand(other.transform, other.gameObject.transform.localScale,other.gameObject));
-
+            StartCoroutine(SuckSand(other.transform, other.gameObject.transform.localScale, other.gameObject));
             StartCoroutine(SmoothMovement(other.transform, other.gameObject.transform.position));
-
-      
-
         }
-    
 
     }
-    private IEnumerator SuckSand(Transform target, Vector3 startScale,GameObject targetObject)
+
+    private IEnumerator SuckSand(Transform target, Vector3 startScale, GameObject targetObject)
     {
         //smooth animation to throw the zurks away
 
@@ -57,7 +48,7 @@ public class CollisionDetection : MonoBehaviour
 
 
             target.localScale = startScale * Mathf.Lerp(1, 0, t);
-     
+
 
 
             elapsed += Time.deltaTime;
@@ -66,7 +57,7 @@ public class CollisionDetection : MonoBehaviour
         target.localScale = Vector3.zero;
         Destroy(targetObject);
     }
-    private IEnumerator ThrowSand(Transform target, Vector3 startScale,GameObject targetObject)
+    private IEnumerator ThrowSand(Transform target, Vector3 startScale, GameObject targetObject)
     {
         //smooth animation to throw the zurks away
 
@@ -82,7 +73,7 @@ public class CollisionDetection : MonoBehaviour
 
 
             target.localScale = startScale * Mathf.Lerp(1, 0, t);
-     
+
 
 
             elapsed += Time.deltaTime;
@@ -106,7 +97,7 @@ public class CollisionDetection : MonoBehaviour
         {
             float t = elapsed / duration;
 
-            target.transform.position =  Vector3.MoveTowards(startPosition,transform.position,t*2);
+            target.transform.position = Vector3.MoveTowards(startPosition, transform.position, t * 2);
 
             Debug.Log(target.localScale);
 
