@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
@@ -7,6 +8,8 @@ public class PlayerController : MonoBehaviour
     //Public Variables
     public GameObject footLeft;
     public GameObject footRight;
+    public GameObject eyeLeft;
+    public GameObject eyeRight;
     public GameObject body;
     public GameObject bodyPivot;
     public GuzzlerColliderController guzzlerCollider;
@@ -72,25 +75,38 @@ public class PlayerController : MonoBehaviour
 
     private void Turning()
     {
-        startingForward = body.transform.forward;
-
+        //Variables
         Vector2 mousePos, guzzlerPos;
         mousePos = Mouse.current.position.ReadValue();
         guzzlerPos = Camera.main.WorldToScreenPoint(transform.position);
-
         Vector2 relativeVector = mousePos - guzzlerPos;
         relativeVector.Normalize();
+        float cross = Vector3.Cross(relativeVector, body.transform.forward).z;
 
-        body.GetComponent<Rigidbody>().AddTorque(Vector3.forward * Vector3.Cross(relativeVector, body.transform.forward).z * -torque);
+        //Turning
+        body.GetComponent<Rigidbody>().AddTorque(Vector3.forward * cross * -torque);
 
-        Debug.Log(Vector3.forward * Vector3.Cross(relativeVector, body.transform.forward).z * -1);
+        //Rotation Dampening
+        body.GetComponent<Rigidbody>().angularVelocity = Vector3.ClampMagnitude(body.GetComponent<Rigidbody>().angularVelocity, 10f);
+        if (Mathf.Abs(cross) < 0.1f)
+        {
+            body.GetComponent<Rigidbody>().angularVelocity = Vector3.MoveTowards(body.GetComponent<Rigidbody>().angularVelocity, Vector3.zero, 30f * Time.deltaTime);
+            Debug.Log("STOOOOP");
+        }
 
-        //body.GetComponent<Rigidbody>().rotation = Quaternion.RotateTowards(body.GetComponent<Rigidbody>().rotation, Quaternion.LookRotation(relativeVector), 600 * Time.deltaTime);
-        //body.transform.forward = relativeVector;
-        //if (guzzlerCollider.isColliding)
-        //{
-        //    body.transform.forward = startingForward;
-        //}
+        //Eye Position Switching
+        if (body.transform.forward.x < 0)
+        {
+            eyeLeft.transform.localPosition = new Vector3(-0.735f, 0.375f, 0.325f);
+            eyeRight.transform.localPosition = new Vector3(-0.735f, 0.375f, 0.325f);
+        } 
+        if (body.transform.forward.x > 0)
+        {
+            eyeLeft.transform.localPosition = new Vector3(-0.735f, -0.375f, 0.325f);
+            eyeRight.transform.localPosition = new Vector3(-0.735f, -0.375f, 0.325f);
+        }
+
+        Debug.Log(body.GetComponent<Rigidbody>().angularVelocity);
     }
 
 }
