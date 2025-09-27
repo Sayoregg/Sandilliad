@@ -5,6 +5,9 @@ public class Blowing : MonoBehaviour
     [SerializeField]
     private GameObject _blowedSand;
 
+    [SerializeField]
+    private int _addForceMultiplier = 800;
+
     private bool _hasAddedForce;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,7 +28,6 @@ public class Blowing : MonoBehaviour
         if (_hasAddedForce == false&&_blowedSand!=null)
         {
             _blowedSand.GetComponent<Rigidbody>().AddForce(transform.forward*800);
-            Debug.Log("add force");
             _hasAddedForce = true;
         }
 
